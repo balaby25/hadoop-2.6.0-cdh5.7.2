@@ -1,0 +1,27 @@
+From 95c7d8fbe122de617d11b6e4ea7d101803d0bd12 Mon Sep 17 00:00:00 2001
+From: Staffan Friberg <sfriberg@cloudera.com>
+Date: Sat, 21 May 2016 08:36:07 -0500
+Subject: [PATCH 1341/1380] CLOUDERA-BUILD. CDH-40629 - Datanode not correctly
+ reporting that FBR is sorted
+
+Change-Id: I62aa53a786f0626d7adb975506ef7d9715d5e850
+(cherry picked from commit f0db286c8e1cd95aac277c90a933a8c185e4b02d)
+---
+ .../apache/hadoop/hdfs/protocolPB/PBHelper.java    |    1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/protocolPB/PBHelper.java b/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/protocolPB/PBHelper.java
+index 4b51ff6..d265bc2 100644
+--- a/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/protocolPB/PBHelper.java
++++ b/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/protocolPB/PBHelper.java
+@@ -2984,6 +2984,7 @@ public static BlockReportContextProto convert(BlockReportContext context) {
+         setCurRpc(context.getCurRpc()).
+         setId(context.getReportId()).
+         setLeaseId(context.getLeaseId()).
++        setSorted(context.isSorted()).
+         build();
+   }
+ 
+-- 
+1.7.9.5
+

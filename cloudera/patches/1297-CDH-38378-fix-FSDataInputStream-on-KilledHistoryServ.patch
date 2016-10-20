@@ -1,0 +1,39 @@
+From eb732ef1aefdf063e9314b74c3be8fe0c04b50e2 Mon Sep 17 00:00:00 2001
+From: Haibo Chen <haibochen@cloudera.com>
+Date: Thu, 7 Apr 2016 13:40:43 -0700
+Subject: [PATCH 1297/1380] CDH-38378 fix FSDataInputStream on
+ KilledHistoryService failure (contributed by
+ Wilfred Spiegelenburg).
+
+Change-Id: I425c158ee7ea7b1635cab5e8a6c813dbf4170403
+---
+ .../mapreduce/v2/hs/KilledHistoryService.java      |   13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-hs/src/main/java/org/apache/hadoop/mapreduce/v2/hs/KilledHistoryService.java b/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-hs/src/main/java/org/apache/hadoop/mapreduce/v2/hs/KilledHistoryService.java
+index 9db0aad..2758524 100644
+--- a/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-hs/src/main/java/org/apache/hadoop/mapreduce/v2/hs/KilledHistoryService.java
++++ b/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-hs/src/main/java/org/apache/hadoop/mapreduce/v2/hs/KilledHistoryService.java
+@@ -210,9 +210,16 @@ private void copy(FileSystem fromFs, FileSystem toFs, Path fromPath,
+ 
+     private JobIndexInfo buildJobIndexInfo(FileSystem fs, Path summaryFile,
+         JobId jobId, String user) throws IOException {
+-      FSDataInputStream in = fs.open(summaryFile);
+-      String summaryString = in.readUTF();
+-      in.close();
++      FSDataInputStream in = null; 
++      String summaryString = null;
++      try {
++        in = fs.open(summaryFile);
++        summaryString = in.readUTF();
++      } finally {
++        if (in != null) {
++          in.close();
++        }
++      }
+       long submitTime =
+           extractLong(SUBMIT_TIME_PATTERN, summaryString, "submitTime");
+       long finishTime =
+-- 
+1.7.9.5
+

@@ -1,0 +1,33 @@
+From 8f933e418bab5b9319e1d86434328cd6199e81c8 Mon Sep 17 00:00:00 2001
+From: Xiao Chen <xiao@cloudera.com>
+Date: Tue, 23 Feb 2016 13:22:27 -0800
+Subject: [PATCH 1260/1380] CLOUDERA-BUILD. Disable TestDNS on supertest.
+
+(cherry picked from commit 6be67a067dab038ebdb11534e22f8ffbf21f851a)
+
+Conflicts:
+	cloudera/post_commit_hook.sh
+
+Change-Id: I1e62a379fe7ecc3be2d5d026edc71387fed40690
+---
+ cloudera/post_commit_hook.sh |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/cloudera/post_commit_hook.sh b/cloudera/post_commit_hook.sh
+index aa5db6f..1492ae3 100755
+--- a/cloudera/post_commit_hook.sh
++++ b/cloudera/post_commit_hook.sh
+@@ -42,8 +42,9 @@ EOF
+ 
+ # Invoke grind to run tests
+ grind -c ${DIR}/supertest/grind.cfg config
+-grind -c ${DIR}/supertest/grind.cfg test --artifacts -r 3 -e TestRM -e TestWorkPreservingRMRestart -e TestRMRestart -e TestContainerAllocation -e TestMRJobClient -e TestCapacityScheduler -e TestDelegatingInputFormat -e TestMRCJCFileInputFormat -e TestJobHistoryEventHandler -e TestCombineFileInputFormat -e TestAMRMRPCResponseId -e TestSystemMetricsPublisher -e TestNodesListManager -e TestRMContainerImpl -e TestApplicationMasterLauncher -e TestRMWebApp -e TestContainerManagerSecurity -e TestResourceManager -e TestParameterParser -e TestNativeCodeLoader -e TestRMContainerAllocator -e TestMRIntermediateDataEncryption -e TestWebApp -e TestCryptoStreamsWithOpensslAesCtrCryptoCodec -e TestCacheDirectives
++grind -c ${DIR}/supertest/grind.cfg test --artifacts -r 3 -e TestRM -e TestWorkPreservingRMRestart -e TestRMRestart -e TestContainerAllocation -e TestMRJobClient -e TestCapacityScheduler -e TestDelegatingInputFormat -e TestMRCJCFileInputFormat -e TestJobHistoryEventHandler -e TestCombineFileInputFormat -e TestAMRMRPCResponseId -e TestSystemMetricsPublisher -e TestNodesListManager -e TestRMContainerImpl -e TestApplicationMasterLauncher -e TestRMWebApp -e TestContainerManagerSecurity -e TestResourceManager -e TestParameterParser -e TestNativeCodeLoader -e TestRMContainerAllocator -e TestMRIntermediateDataEncryption -e TestWebApp -e TestCryptoStreamsWithOpensslAesCtrCryptoCodec -e TestCacheDirectives -e TestDNS
+ # TODO: include TestCacheDirectives again after CDH-37190 is fixed.
++# TestDNS fails only on supertest. CDH-37451
+ 
+ # Cleanup the grind folder
+ if [[ -d "$DIR/$SCRIPTS" ]]; then
+-- 
+1.7.9.5
+
